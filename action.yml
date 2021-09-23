@@ -17,8 +17,12 @@ inputs:
   FVULS_TOKEN:
     description: "xxxxxxxx"
     required: true
+  FVULS_AUTH_URL:
+    description: "Specify one time auth URL for vuls."
+    default: "https://auth.vuls.biz/one-time-auth"
+    required: true
   FVULS_GROUP_ID:
-    description: "xxxxxxxx"
+    description: "Group ID"
     required: true
   FVULS_SERVER_UUID:
     description: "xxxxxxxx"
