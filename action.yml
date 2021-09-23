@@ -40,7 +40,7 @@ runs:
     - name: Install trivy-to-vuls
       run: |
         wget https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
-        tar zxvf trivy-to-vuls_${{ inputs.vulsVersion }}_linux_amd64.tar.gz
+        tar zxvf trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
       shell: bash
     - name: Install future-vuls
       run: |
