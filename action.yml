@@ -8,6 +8,12 @@ inputs:
   TRIVY_VERSION:
     description: "Specify the version for trivy"
     required: true
+  TRIVY_GLOBAL_OPTIONS:
+    description: "Pass any string options to trivy cli"
+    required: false
+  TRIVY_IMAGE_OPTIONS:
+    description: "Pass any string options to trivy image cli"
+    required: false
   DOCKERFILE_PATH:
     description: "docker/anything/Dockerfile"
     required: true
@@ -55,7 +61,7 @@ runs:
       run: |
         docker build . -f ${{ inputs.DOCKERFILE_PATH }} -t ${{ inputs.IMAGE_NAME }}
         set -eo pipefail
-        ./trivy -q --cache-dir vulndb/ image -f=json ${{ inputs.IMAGE_NAME }} | \
+        ./trivy -q ${{ inputs.TRIVY_GLOBAL_OPTIONS }} --cache-dir vulndb/ image ${{ inputs.TRIVY_IMAGE_OPTIONS }} -f=json ${{ inputs.IMAGE_NAME }} | \
         ./trivy-to-vuls parse --stdin | \
         ./future-vuls upload --stdin --url ${{ inputs.FVULS_AUTH_URL }} --group-id ${{ inputs.FVULS_GROUP_ID }}  --token ${{ inputs.FVULS_TOKEN }}  --uuid ${{ inputs.FVULS_SERVER_UUID }}
       shell: bash
