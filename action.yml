@@ -45,7 +45,7 @@ runs:
     - name: Install future-vuls
       run: |
         wget -nv https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
-        tar zxvf future-vuls_${VULS_VERSION}_linux_amd64.tar.gz
+        tar zxvf future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
       shell: bash
     - name: Scan Dockerfile by trivy
       run: |
