@@ -1,0 +1,47 @@
+name: "FutureVuls Trivy Docker Image Scanner"
+description: "Use this action to automatically create a lockfile in future-vuls."
+author: "Marcelo (qwexvf)"
+inputs:
+  VULS_VERSION:
+    description: "Specify the version fo vuls"
+    required: true
+  TRIVY_VERSION:
+    description: "Specify the version for trivy"
+    required: true
+  DOCKERFILE_PATH:
+    description: "docker/anything/Dockerfile"
+    required: true
+  IMAGE_NAME:
+    description: "fvuls/trivy-scan"
+    required: true
+  FVULS_SERVER_UUID:
+    description: "xxxxxxxx"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+    - name: cached scan db
+      uses: actions/cache@v2
+      with:
+        path: vulndb/
+        key: trivy-vulndb
+    - name: Install trivy
+      run: |
+        wget https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
+        tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
+    - name: Install trivy-to-vuls
+      run: |
+        wget https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        tar zxvf trivy-to-vuls_${{ inputs.vulsVersion }}_linux_amd64.tar.gz
+    - name: Install future-vuls
+      run: |
+        wget https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        tar zxvf future-vuls_${VULS_VERSION}_linux_amd64.tar.gz
+    - name: Scan Dockerfile by trivy
+      run: |
+        docker build . -f ${{ inputs.DOCKERFILE_PATH }} -t ${{ inputs.IMAGE_NAME }}
+        set -eo pipefail
+        ./trivy -q --cache-dir vulndb/ image -f=json ${{ inputs.IMAGE_NAME }} | \
+        ./trivy-to-vuls parse --stdin | \
+        ./future-vuls upload --stdin --url ${{ inputs.FVULS_AUTH_URL }} --group-id ${{ inputs.FVULS_GROUP_ID }}  --token ${{ inputs.FVULS_TOKEN }}  --uuid ${{ inputs.FVULS_SERVER_UUID }}
