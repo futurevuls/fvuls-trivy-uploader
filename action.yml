@@ -14,6 +14,12 @@ inputs:
   IMAGE_NAME:
     description: "fvuls/trivy-scan"
     required: true
+  FVULS_TOKEN:
+    description: "xxxxxxxx"
+    required: true
+  FVULS_GROUP_ID:
+    description: "xxxxxxxx"
+    required: true
   FVULS_SERVER_UUID:
     description: "xxxxxxxx"
     required: true
