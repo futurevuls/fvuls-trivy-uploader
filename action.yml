@@ -54,6 +54,7 @@ runs:
           wget -nv https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
           tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
         fi
+      shell: bash
     - name: Install trivy-to-vuls
       run: |
         if [ ${{ inputs.VULS_VERSION }} == "latest" ]; then
