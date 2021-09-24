@@ -4,11 +4,11 @@ author: "Marcelo (qwexvf)"
 inputs:
   VULS_VERSION:
     description: "Specify the version fo vuls"
-    defualt: "latest"
+    default: "latest"
     required: false
   TRIVY_VERSION:
     description: "Specify the version for trivy"
-    defualt: "latest"
+    default: "latest"
     required: false
   TRIVY_GLOBAL_OPTIONS:
     description: "Pass any string options to trivy cli"
@@ -46,7 +46,7 @@ runs:
         key: trivy-vulndb
     - name: Install trivy
       run: |
-        if [ ${{ inputs.TRIVY_VERSION }} == "latest" ]; then
+        if [ "${{ inputs.TRIVY_VERSION }}" == "latest" ]; then
           LATEST_VERSION=$(curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | jq -r .tag_name) | cut -c 2-
           wget -nv https://github.com/aquasecurity/trivy/releases/download/v${LATEST_VERSION}/trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
           tar zxvf trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
@@ -57,7 +57,7 @@ runs:
       shell: bash
     - name: Install trivy-to-vuls
       run: |
-        if [ ${{ inputs.VULS_VERSION }} == "latest" ]; then
+        if [ "${{ inputs.VULS_VERSION }}" == "latest" ]; then
           LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
           wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
           tar zxvf trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
@@ -68,7 +68,7 @@ runs:
       shell: bash
     - name: Install future-vuls
       run: |
-        if [ ${{ inputs.VULS_VERSION }} == "latest" ]; then
+        if [ "${{ inputs.VULS_VERSION }}" == "latest" ]; then
           LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
           wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
           tar zxvf future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
