@@ -4,42 +4,21 @@
 
 Describe how to use your action here.
 
-### Example workflow
-
-```yaml
-name: My Workflow
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Run action
-
-      # Put your action repo here
-      uses: me/myaction@master
-
-      # Put an example of your mandatory inputs here
-      with:
-        myInput: world
-```
-
 ### Inputs
 
-| Input                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `myInput`  | An example mandatory input    |
-| `anotherInput` _(optional)_  | An example optional input    |
-
-### Outputs
-
-| Output                                             | Description                                        |
-|------------------------------------------------------|-----------------------------------------------|
-| `myOutput`  | An example output (returns 'Hello world')    |
+| Name                 | default | required | description |
+|----------------------|---------|----------|-------------|
+| VULS_VERSION         | latest  | false    |Vulsの最新バージョンを指定する|
+| TRIVY_VERSION        | latest  | false    |Trivyの最新バージョンを指定する|
+| DOCKERFILE_PATH      | "" | true     |スキャン対象の `Dockerfile` への相対パス|
+| IMAGE_NAME           | "" | true     | `Dockerfile` のイメージ名|
+| FVULS_TOKEN          | "" | true     |FutureVulsのスキャナトークン|
+| FVULS_SERVER_UUID    | "" | true     |FutureVulsのサーバUUID|
+| FVULS_GROUP_ID       | "" | true     |FutureVulsのグループID|
+| TRIVY_GLOBAL_OPTIONS | "" | false    |trivy のコマンドにオプションが渡せます(-d)|
+| TRIVY_IMAGE_OPTIONS  | "" | false    |trivy image のコマンドにオプションが渡せます(--timeout=60m)|
 
 ## Examples
-
-> NOTE: People ❤️ cut and paste examples. Be generous with them!
 
 ### Using the optional input
 
@@ -47,30 +26,37 @@ This is how to use the optional input.
 
 ```yaml
 with:
-  myInput: world
-  anotherInput: optional
+  VULS_VERSION: world
+  TRIVY_VERSION: optional
+  TRIVY_GLOBAL_OPTIONS: '-d'
+  TRIVY_IMAGE_OPTIONS: '--timeout=60m'
 ```
 
-### Using outputs
+### Working Example
 
-Show people how to use your outputs in another action.
+The example below will scan and upload go.sum and `./path/to/Dockerfile`
+and the Action will only run when changes are applied to these files and pushed to release.
 
 ```yaml
-steps:
-- uses: actions/checkout@master
-- name: Run action
-  id: myaction
+name: FutureVuls Docker Image Scan
+on:
+  push:
+    paths:
+      - './path/to/Dockerfile'
+    branches:
+      - release
 
-  # Put your action name here
-  uses: me/myaction@master
-
-  # Put an example of your mandatory arguments here
-  with:
-    myInput: world
-
-# Put an example of using your outputs here
-- name: Check outputs
-    run: |
-    echo "Outputs - ${{ steps.myaction.outputs.myOutput }}"
+jobs:
+  docker-test:
+    name: FutureVuls Docker Image Scan
+    runs-on: ubuntu-latest
+    steps:
+    - name: Scan Dockerfile by trivy
+      uses: futurevuls/fvuls-trivy-uploader@main 
+      with:
+        DOCKERFILE_PATH: './path/to/Dockerfile'
+        IMAGE_NAME: 'my-docker-image-name'
+        FVULS_TOKEN: ${{ secrets.FVULS_TOKEN }}
+        FVULS_GROUP_ID: ${{ secrets.FVULS_GROUP_ID }}
+        FVULS_SERVER_UUID: ${{ secrets.FVULS_SERVER_UUID }}
 ```
-# fvuls-trivy-uploader
