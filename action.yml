@@ -5,7 +5,8 @@ inputs:
   VULS_VERSION:
     description: "Specify the version fo vuls"
     default: "latest"
-    required: false TRIVY_VERSION:
+    required: false
+  TRIVY_VERSION:
     description: "Specify the version for trivy"
     default: "latest"
     required: false
