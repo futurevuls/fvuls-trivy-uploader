@@ -47,9 +47,9 @@ runs:
     - name: Install trivy
       run: |
         if [ "${{ inputs.TRIVY_VERSION }}" == "latest" ]; then
-          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | jq -r .tag_name) | cut -c 2-
-          wget -nv https://github.com/aquasecurity/trivy/releases/download/v${LATEST_VERSION}/trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
-          tar zxvf trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
+          export LATEST_VERSION=$(curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | jq -r .tag_name) | cut -c 2-
+          wget -nv https://github.com/aquasecurity/trivy/releases/download/v$LATEST_VERSION/trivy_$LATEST_VERSION_Linux-64bit.tar.gz
+          tar zxvf "trivy_${LATEST_VERSION}_Linux-64bit.tar.gz"
         else
           wget -nv https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
           tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
@@ -58,7 +58,7 @@ runs:
     - name: Install trivy-to-vuls
       run: |
         if [ "${{ inputs.VULS_VERSION }}" == "latest" ]; then
-          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
+          export LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
           wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
           tar zxvf trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
         else
@@ -69,7 +69,7 @@ runs:
     - name: Install future-vuls
       run: |
         if [ "${{ inputs.VULS_VERSION }}" == "latest" ]; then
-          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
+          export LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name) | cut -c 2-
           wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
           tar zxvf future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
         else
