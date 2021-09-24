@@ -4,10 +4,12 @@ author: "Marcelo (qwexvf)"
 inputs:
   VULS_VERSION:
     description: "Specify the version fo vuls"
-    required: true
+    defualt: "latest"
+    required: false
   TRIVY_VERSION:
     description: "Specify the version for trivy"
-    required: true
+    defualt: "latest"
+    required: false
   TRIVY_GLOBAL_OPTIONS:
     description: "Pass any string options to trivy cli"
     required: false
@@ -44,18 +46,35 @@ runs:
         key: trivy-vulndb
     - name: Install trivy
       run: |
-        wget -nv https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
-        tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
-      shell: bash
+        if [ ${{ inputs.TRIVY_VERSION }} == "latest" ]; then
+          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | jq -r .tag_name)
+          wget -nv https://github.com/aquasecurity/trivy/releases/download/${{ LATEST_VERSION }}/trivy_${{ LATEST_VERSION }}_Linux-64bit.tar.gz
+          tar zxvf trivy_${{ LATEST_VERSION }}_Linux-64bit.tar.gz
+        else
+          wget -nv https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
+          tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
+        fi
     - name: Install trivy-to-vuls
       run: |
-        wget -nv https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
-        tar zxvf trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        if [ ${{ inputs.VULS_VERSION }} == "latest" ]; then
+          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name)
+          wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
+          tar zxvf trivy-to-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
+        else
+          wget -nv https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+          tar zxvf trivy-to-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        fi
       shell: bash
     - name: Install future-vuls
       run: |
-        wget -nv https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
-        tar zxvf future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        if [ ${{ inputs.VULS_VERSION }} == "latest" ]; then
+          LATEST_VERSION=$(curl --silent "https://api.github.com/repos/future-architect/vuls/releases/latest" | jq -r .tag_name)
+          wget -nv https://github.com/future-architect/vuls/releases/download/v${LATEST_VERSION}/future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
+          tar zxvf future-vuls_${LATEST_VERSION}_linux_amd64.tar.gz
+        else
+          wget -nv https://github.com/future-architect/vuls/releases/download/v${{ inputs.VULS_VERSION }}/future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+          tar zxvf future-vuls_${{ inputs.VULS_VERSION }}_linux_amd64.tar.gz
+        fi
       shell: bash
     - name: Scan Dockerfile by trivy
       run: |
