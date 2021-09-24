@@ -49,8 +49,8 @@ runs:
         if [ "${{ inputs.TRIVY_VERSION }}" == "latest" ]; then
           export LATEST_VERSION=$(curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | jq -r .tag_name | cut -c 2-)
           echo $LATEST_VERSION
-          wget -nv "https://github.com/aquasecurity/trivy/releases/download/v${LATEST_VERSION}/trivy_${LATEST_VERSION}_Linux-64bit.tar.gz"
-          tar zxvf "trivy_${LATEST_VERSION}_Linux-64bit.tar.gz"
+          wget -nv https://github.com/aquasecurity/trivy/releases/download/v${LATEST_VERSION}/trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
+          tar zxvf trivy_${LATEST_VERSION}_Linux-64bit.tar.gz
         else
           wget -nv https://github.com/aquasecurity/trivy/releases/download/v${{ inputs.TRIVY_VERSION }}/trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
           tar zxvf trivy_${{ inputs.TRIVY_VERSION }}_Linux-64bit.tar.gz
